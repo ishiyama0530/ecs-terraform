@@ -1,5 +1,5 @@
 resource "aws_ecs_cluster" "this" {
-  name = var.app_name
+  name = "${var.app_name}-cluster"
 
   tags = {
     Name = "${var.app_name}-ecs-cluster"
@@ -10,20 +10,51 @@ resource "aws_ecs_task_definition" "app" {
   family                   = var.app_name
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
-  cpu                      = 256
-  memory                   = 512
+  cpu                      = 1024
+  memory                   = 2048
+  task_role_arn            = aws_iam_role.task.arn
+  execution_role_arn       = aws_iam_role.task.arn
+
   container_definitions = jsonencode([
     {
-      name      = var.app_name
-      image     = "service-first" // #
-      essential = true
-      portMappings = [
+      name : var.app_name,
+      image : "nginx:latest",
+      essential : true,
+      portMappings : [
         {
-          protocol      = "tcp"
-          containerPort = 80
-          hostPort      = 80
+          protocol : "tcp",
+          containerPort : 80,
+          hostPort : 80,
         }
-      ]
+      ],
+      logConfiguration : {
+        logDriver : "awsfirelens",
+        options : {
+          "Name" : "cloudwatch_logs",
+          "awslogs-region" : var.region,
+          "log_group_name" : "/aws/ecs/containerinsights/${var.app_name}-cluster/application",
+          "auto_create_group" : "true",
+          "log_stream_prefix" : "ecs/"
+        }
+      }
+    },
+    {
+      name : "log_router",
+      image : "906394416424.dkr.ecr.${var.region}.amazonaws.com/aws-for-fluent-bit:stable",
+      essential : true,
+      user : "0", # これがないと毎回 terraform apply でタスクの再定義が実行されてしまう
+      firelensConfiguration : {
+        type : "fluentbit"
+      },
+      logConfiguration : {
+        logDriver : "awslogs",
+        options : {
+          "awslogs-group" : "firelens-container",
+          "awslogs-region" : var.region,
+          "awslogs-create-group" : "true",
+          "awslogs-stream-prefix" : "firelens"
+        }
+      }
     }
   ])
 
@@ -33,10 +64,10 @@ resource "aws_ecs_task_definition" "app" {
 }
 
 resource "aws_ecs_service" "app" {
-  name            = var.app_name
+  name            = "${var.app_name}-service"
   cluster         = aws_ecs_cluster.this.id
   task_definition = aws_ecs_task_definition.app.arn
-  desired_count   = 1
+  desired_count   = 2
   launch_type     = "FARGATE"
 
   network_configuration {
