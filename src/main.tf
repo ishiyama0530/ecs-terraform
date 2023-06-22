@@ -44,6 +44,21 @@ module "globalaccelerator" {
   lb_arn     = module.alb.alb_arn
 }
 
+module "route53" {
+  source = "./modules/route53"
+
+  profile                   = var.profile
+  region                    = var.region
+  app_name                  = var.app_name
+  account_id                = module.account_id_getter.value
+  identity                  = module.identity_generator.value
+  zone_id                   = var.zone_id
+  domain_name               = var.domain_name
+  cert_arn                  = var.cert_arn
+  globalaccelerator_name    = module.globalaccelerator.dns_name
+  globalaccelerator_zone_id = module.globalaccelerator.hosted_zone_id
+}
+
 module "ecs" {
   source = "./modules/ecs"
 

@@ -30,11 +30,11 @@ resource "aws_ecs_task_definition" "app" {
       logConfiguration : {
         logDriver : "awsfirelens",
         options : {
-          "Name" : "cloudwatch_logs",
-          "awslogs-region" : var.region,
+          "Name" : "cloudwatch",
+          "auto_create_group" : "true"
           "log_group_name" : "/aws/ecs/containerinsights/${var.app_name}-cluster/application",
-          "auto_create_group" : "true",
-          "log_stream_prefix" : "ecs/"
+          "log_stream_prefix" : "ecs/",
+          "region" : var.region,
         }
       }
     },

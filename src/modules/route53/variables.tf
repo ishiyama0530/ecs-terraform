@@ -11,18 +11,12 @@ variable "app_name" {
   type = string
 }
 
-variable "vpc" {
-  type = object({
-    cidr = string
-  })
+variable "account_id" {
+  type = string
 }
 
-variable "subnets" {
-  type = list(object({
-    private_subnet_cidr = string,
-    lb_subnet_cidr      = string,
-    nat_subnet_cidr     = string,
-  }))
+variable "identity" {
+  type = string
 }
 
 variable "zone_id" {
@@ -34,5 +28,13 @@ variable "domain_name" {
 }
 
 variable "cert_arn" {
+  type = string
+}
+
+variable "globalaccelerator_name" {
+  type = string
+}
+
+variable "globalaccelerator_zone_id" {
   type = string
 }

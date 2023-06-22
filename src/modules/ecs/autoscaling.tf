@@ -8,6 +8,10 @@ resource "aws_appautoscaling_target" "ecs" {
   tags = {
     Name = "${var.app_name}-ecs-asg"
   }
+
+  depends_on = [
+    aws_ecs_service.app
+  ]
 }
 
 resource "aws_appautoscaling_policy" "ecs" {
