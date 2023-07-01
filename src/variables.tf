@@ -1,3 +1,11 @@
+variable "account_id" {
+  type = string
+}
+
+variable "identity" {
+  type = string
+}
+
 variable "profile" {
   type    = string
   default = "default"

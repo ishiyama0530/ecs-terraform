@@ -1,3 +1,10 @@
+data "aws_caller_identity" "self" {}
+
+locals {
+  account_id = data.aws_caller_identity.self.account_id
+  identity   = sha256("${var.region}-${var.app_name}")
+}
+
 variable "profile" {
   type    = string
   default = "default"

@@ -1,19 +1,8 @@
-module "account_id_getter" {
-  source = "../../lib/account_id_getter"
-}
-
-module "identity_generator" {
-  source = "../../lib/identity_generator"
-
-  region   = var.region
-  app_name = var.app_name
-}
-
 module "entrypoint" {
-  source = "../../modules"
+  source = "../../"
 
-  account_id  = module.account_id_getter.value
-  identity    = module.identity_generator.value
+  account_id  = local.account_id
+  identity    = local.identity
   profile     = var.profile
   region      = var.region
   app_name    = var.app_name
