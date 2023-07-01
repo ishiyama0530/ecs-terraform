@@ -31,5 +31,3 @@ resource "aws_appautoscaling_policy" "ecs" {
     scale_in_cooldown  = 60
   }
 }
-
-
