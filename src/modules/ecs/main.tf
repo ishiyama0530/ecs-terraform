@@ -1,17 +1,22 @@
-resource "aws_ecs_cluster" "this" {
-  name = "${var.app_name}-cluster"
+resource "aws_ecs_cluster" "cluster" {
+  name = "${var.app_name}-ecs-cluster"
+
+  setting {
+    name  = "containerInsights"
+    value = "enabled"
+  }
 
   tags = {
     Name = "${var.app_name}-ecs-cluster"
   }
 }
 
-resource "aws_ecs_task_definition" "app" {
+resource "aws_ecs_task_definition" "task" {
   family                   = var.app_name
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
-  cpu                      = 1024
-  memory                   = 2048
+  cpu                      = 256
+  memory                   = 512
   task_role_arn            = aws_iam_role.task.arn
   execution_role_arn       = aws_iam_role.task.arn
 
@@ -27,6 +32,13 @@ resource "aws_ecs_task_definition" "app" {
           hostPort : 80,
         }
       ],
+      healthCheck : {
+        command     = ["CMD-SHELL", "curl -f http://localhost/ || exit 1"]
+        interval    = 30
+        timeout     = 5
+        retries     = 3
+        startPeriod = 30
+      },
       logConfiguration : {
         logDriver : "awsfirelens",
         options : {
@@ -46,6 +58,13 @@ resource "aws_ecs_task_definition" "app" {
       firelensConfiguration : {
         type : "fluentbit"
       },
+      healthCheck : {
+        command     = ["CMD-SHELL", "pgrep fluent-bit || exit 1"]
+        interval    = 30
+        timeout     = 5
+        retries     = 3
+        startPeriod = 30
+      },
       logConfiguration : {
         logDriver : "awslogs",
         options : {
@@ -54,7 +73,7 @@ resource "aws_ecs_task_definition" "app" {
           "awslogs-create-group" : "true",
           "awslogs-stream-prefix" : "firelens"
         }
-      }
+      },
     }
   ])
 
@@ -63,12 +82,13 @@ resource "aws_ecs_task_definition" "app" {
   }
 }
 
-resource "aws_ecs_service" "app" {
+resource "aws_ecs_service" "service" {
   name            = "${var.app_name}-service"
-  cluster         = aws_ecs_cluster.this.id
-  task_definition = aws_ecs_task_definition.app.arn
+  cluster         = aws_ecs_cluster.cluster.id
+  task_definition = aws_ecs_task_definition.task.arn
   desired_count   = 2
   launch_type     = "FARGATE"
+  propagate_tags  = "SERVICE"
 
   network_configuration {
     subnets         = var.subnet_ids

@@ -9,13 +9,14 @@ terraform {
 }
 
 provider "aws" {
-  region = var.region
+  profile = var.profile
+  region  = var.region
 
   default_tags {
     tags = {
       "ManagedBy"       = "Terraform"
       "CreatedBy"       = var.account_id
-      "Identity"        = var.identity
+      "Identity"        = local.identity
       "ApplicationName" = var.app_name
     }
   }

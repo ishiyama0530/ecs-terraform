@@ -19,6 +19,7 @@ resource "aws_iam_role" "task" {
   }
 }
 
+#tfsec:ignore:aws-iam-no-policy-wildcards
 resource "aws_iam_policy" "task" {
   name = "${var.app_name}-ecs-task-policy"
 

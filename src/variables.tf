@@ -28,19 +28,10 @@ variable "vpc" {
 variable "subnets" {
   type = list(object({
     private_subnet_cidr = string,
-    lb_subnet_cidr      = string,
-    nat_subnet_cidr     = string,
+    public_subnet_cidr  = string,
   }))
 }
 
-variable "zone_id" {
-  type = string
-}
-
 variable "domain_name" {
-  type = string
-}
-
-variable "cert_arn" {
   type = string
 }
