@@ -11,6 +11,9 @@ $ terraform init
 
 # Resource Apply
 $ terraform apply -var="domain_name=example.com"
+
+# Resource Destroy
+$ terraform destroy -var="domain_name=example.com"
 ```
 
 Execute at work directory

@@ -5,7 +5,9 @@ Execution command
 ```bash
 $ terraform init
 
-$ terraform apply -lock=false -state=/dev/null -var="app_name=staging-web-app" -var="account_id=$(aws sts get-caller-identity --query Account --output text)"
+$ terraform apply -var="app_name=staging-web-app" -var="account_id=$(aws sts get-caller-identity --query Account --output text)"
+
+$ terraform destroy -var="app_name=staging-web-app" -var="account_id=$(aws sts get-caller-identity --query Account --output text)"
 ```
 
 <!-- BEGIN_TF_DOCS -->
