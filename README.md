@@ -1,10 +1,41 @@
 # ecs-terraform
 
-Execute at entry point
+Create backend s3
+
+```bash
+# Move work directory
+$ cd helpers/backend
+
+# Initialize
+$ terraform init
+
+# Resource Apply
+$ terraform apply -var="app_name=your_app" -var="account_id=$(aws sts get-caller-identity --query Account --output text)"
+
+# Resource Destroy
+$ terraform destroy -var="app_name=your_app" -var="account_id=$(aws sts get-caller-identity --query Account --output text)"
+```
+
+Modify backend.tf to match the backend file you created.
+
+```bash
+# src/envs/staging/backend.tf
+terraform {
+  backend "s3" {
+    bucket = "terraform-state-your_app"
+    region = "ap-northeast-1"
+    key    = "terraform-state-your_app/terraform.tfstate"
+  }
+}
+```
+
+Apply terraform
 
 ```bash
 # Move work directory
 $ cd src/envs/staging
+
+# backend.tf
 
 # Initialize
 $ terraform init
@@ -16,7 +47,7 @@ $ terraform apply -var="domain_name=example.com"
 $ terraform destroy -var="domain_name=example.com"
 ```
 
-Execute at work directory
+Execute utilities
 
 ```bash
 # Pre-commit checks
