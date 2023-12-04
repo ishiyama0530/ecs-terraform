@@ -10,10 +10,10 @@ $ cd helpers/backend
 $ terraform init
 
 # Resource Apply
-$ terraform apply -var="app_name=your_app" -var="account_id=$(aws sts get-caller-identity --query Account --output text)"
+$ terraform apply -var="app_name=your-app" -var="account_id=$(aws sts get-caller-identity --query Account --output text)"
 
 # Resource Destroy
-$ terraform destroy -var="app_name=your_app" -var="account_id=$(aws sts get-caller-identity --query Account --output text)"
+$ terraform destroy -var="app_name=your-app" -var="account_id=$(aws sts get-caller-identity --query Account --output text)"
 ```
 
 Modify backend.tf to match the backend file you created.
@@ -22,9 +22,9 @@ Modify backend.tf to match the backend file you created.
 # src/envs/staging/backend.tf
 terraform {
   backend "s3" {
-    bucket = "terraform-state-your_app"
+    bucket = "terraform-state-your-app"
     region = "ap-northeast-1"
-    key    = "terraform-state-your_app/terraform.tfstate"
+    key    = "terraform-state-your-app/terraform.tfstate"
   }
 }
 ```

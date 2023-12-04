@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "terraform_state" {
-  bucket = "terraform-state-${var.app_name}"
+  bucket        = "terraform-state-${var.app_name}"
   force_destroy = true
 }
 

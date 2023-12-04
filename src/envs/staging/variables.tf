@@ -19,7 +19,7 @@ variable "region" {
 
 variable "app_name" {
   type        = string
-  default     = "staging-web-app"
+  default     = "your-app"
   description = "value of Application Name"
 }
 

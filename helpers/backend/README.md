@@ -3,11 +3,17 @@
 Execution command
 
 ```bash
+# Move work directory
+$ cd helpers/backend
+
+# Initialize
 $ terraform init
 
-$ terraform apply -var="app_name=staging-web-app" -var="account_id=$(aws sts get-caller-identity --query Account --output text)"
+# Resource Apply
+$ terraform apply -var="app_name=your-app" -var="account_id=$(aws sts get-caller-identity --query Account --output text)"
 
-$ terraform destroy -var="app_name=staging-web-app" -var="account_id=$(aws sts get-caller-identity --query Account --output text)"
+# Resource Destroy
+$ terraform destroy -var="app_name=your-app" -var="account_id=$(aws sts get-caller-identity --query Account --output text)"
 ```
 
 <!-- BEGIN_TF_DOCS -->

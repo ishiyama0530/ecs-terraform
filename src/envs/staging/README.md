@@ -1,5 +1,36 @@
 # ECS-TERRAFORM/STAGING
 
+Modify backend.tf to match the backend file you created.
+
+```bash
+# src/envs/staging/backend.tf
+terraform {
+  backend "s3" {
+    bucket = "terraform-state-your-app"
+    region = "ap-northeast-1"
+    key    = "terraform-state-your-app/terraform.tfstate"
+  }
+}
+```
+
+Apply terraform
+
+```bash
+# Move work directory
+$ cd src/envs/staging
+
+# backend.tf
+
+# Initialize
+$ terraform init
+
+# Resource Apply
+$ terraform apply -var="domain_name=example.com"
+
+# Resource Destroy
+$ terraform destroy -var="domain_name=example.com"
+```
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
@@ -9,7 +40,7 @@ No requirements.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.29.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
 
 ## Modules
 
@@ -27,7 +58,7 @@ No requirements.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_app_name"></a> [app\_name](#input\_app\_name) | value of Application Name | `string` | `"staging-web-app"` | no |
+| <a name="input_app_name"></a> [app\_name](#input\_app\_name) | value of Application Name | `string` | `"your-app"` | no |
 | <a name="input_domain_name"></a> [domain\_name](#input\_domain\_name) | value of Route53 Domain Name | `string` | n/a | yes |
 | <a name="input_profile"></a> [profile](#input\_profile) | value of AWS\_PROFILE | `string` | `"default"` | no |
 | <a name="input_region"></a> [region](#input\_region) | value of AWS\_REGION | `string` | `"ap-northeast-1"` | no |
